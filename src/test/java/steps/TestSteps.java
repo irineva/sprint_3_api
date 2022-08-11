@@ -1,11 +1,12 @@
 package steps;
 
-import java.io.File;
-
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import requests.testsData.CourierCredsData;
 import requests.CourierRequest;
 import requests.OrderRequest;
+import requests.testsData.OrderData;
+import requests.testsData.NewCourierData;
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_CONFLICT;
@@ -21,23 +22,23 @@ public class TestSteps {
     OrderRequest orderRequest = new OrderRequest();
 
     @Step("Создаем нового курьера")
-    public Response createCourierStep(File file) {
-        return courierRequest.createCourier(file);
+    public Response createCourierStep(NewCourierData newCourier) {
+        return courierRequest.createCourier(newCourier);
     }
 
     @Step("Логинимся новым курьером")
-    public Response loginCourierStep (File file) {
-        return courierRequest.loginCourier(file);
+    public Response loginCourierStep (CourierCredsData courierLoginData) {
+        return courierRequest.loginCourier1(courierLoginData);
     }
 
     @Step("Удаляем тестовые данные")
-    public void deleteTestDataStep (File file) {
-        courierRequest.deleteTestData(file);
+    public void deleteTestDataStep (Object testData) {
+        courierRequest.deleteTestData(testData);
     }
 
     @Step("Создаем новый заказ")
-    public Response createOrderStep(File file) {
-        return orderRequest.createOrder(file);
+    public Response createOrderStep(OrderData orderData) {
+        return orderRequest.createOrder(orderData);
     }
 
     @Step("Отменяем заказ")

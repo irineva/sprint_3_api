@@ -3,71 +3,78 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import io.qameta.allure.junit4.DisplayName;
+import requests.testsData.CourierCredsData;
+import requests.testsData.NewCourierData;
 import steps.TestSteps;
-import java.io.File;
 
 public class LoginCourierTests {
 
-    steps.TestSteps testSteps = new TestSteps();
+    static String login = "irineva";
+    static String password = "1234";
+    static String firstName = "kate";
+    static String incorrectLogin = "чсм";
+    static String incorrectPassword = "чсм";
 
-    File courierCredsJson = new File("src/test/resources/login/courierCreds.json");
-    File newCourierJson = new File("src/test/resources/courier/newCourier.json");
+    steps.TestSteps testSteps = new TestSteps();
+    CourierCredsData courierLoginData = new CourierCredsData(login, password);
+
 
     @Before
-    public void createeTestData() {
-        testSteps.createCourierStep(newCourierJson);
+    public void createTestData() {
+        testSteps.createCourierStep(new NewCourierData(login, password, firstName));
     }
 
     @After
     public void deleteTestData() {
-        testSteps.deleteTestDataStep(courierCredsJson);
+        testSteps.deleteTestDataStep(courierLoginData);
     }
 
 
     @Test
     @DisplayName("Авторизация курьера")
     public void courierSuccessAuthorization() {
-        Response response = testSteps.loginCourierStep(courierCredsJson);
+        CourierCredsData courierLoginData = new CourierCredsData(login, password);
+        Response response = testSteps.loginCourierStep(courierLoginData);
         testSteps.compareBodyAndStatusCodeForSuccessLoginRequest(response);
     }
 
     @Test
     @DisplayName("Авторизация курьера без логина")
     public void courierAuthorizationWithoutLogin() {
-        File courierCredsJson = new File("src/test/resources/login/courierCredsWithoutLogin.json");
-        Response response = testSteps.loginCourierStep(courierCredsJson);
+        CourierCredsData courierWithoutLogin = new CourierCredsData("",password);
+        Response response = testSteps.loginCourierStep(courierWithoutLogin);
         testSteps.compareBodyAndStatusCodeForBadRequest(response);
     }
 
     @Test
     @DisplayName("Авторизация курьера без пароля")
     public void courierAuthorizationWithoutPass() {
-        File courierCredsJson = new File("src/test/resources/login/courierCredsWithoutPass.json");
-        Response response = testSteps.loginCourierStep(courierCredsJson);
+        CourierCredsData courierWithoutPass = new CourierCredsData(login, "");
+        Response response = testSteps.loginCourierStep(courierWithoutPass);
         testSteps.compareBodyAndStatusCodeForBadRequest(response);
     }
 
     @Test
     @DisplayName("Авторизация курьера с неверным паролем и логином")
     public void courierAuthorizationWithIncorrectLoginAndPass() {
-        File courierCredsJson = new File("src/test/resources/login/incorrectCourierCreds.json");
-        Response response = testSteps.loginCourierStep(courierCredsJson);
+        CourierCredsData courierLoginData = new CourierCredsData(incorrectLogin, incorrectPassword);
+        Response response = testSteps.loginCourierStep(courierLoginData);
         testSteps.compareBodyAndStatusCodeForNotFoundRequest(response);
     }
 
     @Test
     @DisplayName("Авторизация курьера с неверным паролем")
     public void courierAuthorizationWithIncorrectPass() {
-        File courierCredsJson = new File("src/test/resources/login/сourierCredsWithIncorrectPass.json");
-        Response response = testSteps.loginCourierStep(courierCredsJson);
+        CourierCredsData courierLoginData = new CourierCredsData(login, incorrectPassword);
+        Response response = testSteps.loginCourierStep(courierLoginData);
         testSteps.compareBodyAndStatusCodeForNotFoundRequest(response);
     }
 
     @Test
     @DisplayName("Авторизация курьера с неверным логином")
     public void courierAuthorizationWithIncorrectLogin() {
-        File courierCredsJson = new File("src/test/resources/login/сourierCredsWithIncorrectLogin.json");
-        Response response = testSteps.loginCourierStep(courierCredsJson);
+        CourierCredsData courierLoginData = new CourierCredsData(incorrectLogin, password);
+        Response response = testSteps.loginCourierStep(courierLoginData);
         testSteps.compareBodyAndStatusCodeForNotFoundRequest(response);
     }
 

@@ -1,21 +1,44 @@
 import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Test;
-import io.qameta.allure.junit4.DisplayName;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import requests.testsData.OrderData;
 import steps.TestSteps;
 
-import java.io.File;
+@RunWith(Parameterized.class)
+public class CreateOrderTests {
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.core.IsNull.notNullValue;
+    private final OrderData scooterOrder;
+    private final TestSteps testSteps;
+    static String firstName = "Naruto";
+    static String lastName = "Uchiha";
+    static String address = "Konoha, 142 apt.";
+    static int metroStation = 4;
+    static String phone = "+7 800 355 35 35";
+    static int rentTime = 5;
+    static String deliveryDate = "2020-06-06";
+    static String comment = "Saske, come back to Konoha";
+    static String[] blackColor = {"BLACK"};
+    static String[] allColor = {"BLACK", "GREY"};
+    static String[] greyColor = {"GREY"};
+    static String[] noColor = {};
 
-public class CreateOrderTests{
 
-    TestSteps testSteps = new TestSteps();
-    File blackScooterOrderJson = new File("src/test/resources/order/blackScooterOrder.json");
-    File greyScooterOrderJson = new File("src/test/resources/order/greyScooterOrder.json");
-    File allColorScooterOrderJson = new File("src/test/resources/order/allColorScooterOrder.json");
-    File noColorScooterOrderJson = new File("src/test/resources/order/noColorScooterOrder.json");
+    public CreateOrderTests(OrderData scooterOrder) {
+        this.scooterOrder = scooterOrder;
+        this.testSteps = new TestSteps();
+    }
+
+    @Parameterized.Parameters
+    public static Object[] getScooterOrderData() {
+        return new Object[]{
+                (new OrderData(firstName, lastName, address, metroStation, phone, rentTime, deliveryDate, comment, blackColor )),
+                (new OrderData(firstName, lastName, address, metroStation, phone, rentTime, deliveryDate, comment, greyColor )),
+                (new OrderData(firstName, lastName, address, metroStation, phone, rentTime, deliveryDate, comment, allColor )),
+                (new OrderData(firstName, lastName, address, metroStation, phone, rentTime, deliveryDate, comment, noColor )),
+        };
+    }
 
     @After
     public void deleteTestDataAnClearCash() {
@@ -24,30 +47,8 @@ public class CreateOrderTests{
     }
 
     @Test
-    @DisplayName("Создание заказа на черный скутер")
-    public void backScooterOrderCreate() {
-        Response response = testSteps.createOrderStep(blackScooterOrderJson);
-        testSteps.compareBodyAndStatusCodeForCreatedOrderRequest(response);
-    }
-
-    @Test
-    @DisplayName("Создание заказа на серый скутер")
-    public void greyScooterOrderCreate() {
-        Response response = testSteps.createOrderStep(greyScooterOrderJson);
-        testSteps.compareBodyAndStatusCodeForCreatedOrderRequest(response);
-    }
-
-    @Test
-    @DisplayName("Создание заказа на скутер любого цвета")
-    public void anyColorScooterOrderCreate() {
-        Response response = testSteps.createOrderStep(allColorScooterOrderJson);
-        testSteps.compareBodyAndStatusCodeForCreatedOrderRequest(response);
-    }
-
-    @Test
-    @DisplayName("Создание заказа на скутер без указания цвета")
-    public void noColorScooterOrderCreate() {
-        Response response = testSteps.createOrderStep(noColorScooterOrderJson);
+    public void scooterOrderCreate() {
+        Response response = testSteps.createOrderStep(scooterOrder);
         testSteps.compareBodyAndStatusCodeForCreatedOrderRequest(response);
     }
 

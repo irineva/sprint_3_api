@@ -1,26 +1,22 @@
 package requests;
-import java.io.File;
 
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
+import requests.testsData.OrderData;
 
 import static io.restassured.RestAssured.given;
-public class OrderRequest {
-        private RequestSpecification requestSpecification = RestAssured.given()
-                .baseUri("http://qa-scooter.praktikum-services.ru");
+public class OrderRequest extends BaseRequest {
 
         private final static String ORDER_PATH = "/api/v1/orders";
 
         Integer cashId = null;
 
-        public Response createOrder(File file) {
+        public Response createOrder(OrderData orderData) {
             Response response =
                     given()
                             .spec(requestSpecification)
                             .header("Content-type", "application/json")
                             .and()
-                            .body(file)
+                            .body(orderData)
                             .when()
                             .post(ORDER_PATH);
             saveOrderIdToCash(response);

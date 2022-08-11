@@ -1,6 +1,5 @@
 import io.restassured.response.Response;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import io.qameta.allure.junit4.DisplayName;
 import steps.TestSteps;
@@ -10,7 +9,7 @@ public class OrdersListTest {
     TestSteps testSteps = new TestSteps();
 
     @After
-    public void deleteTestDataAndclearCash() {
+    public void deleteTestDataAndClearCash() {
         testSteps.cancelOrderStep();
         testSteps.clearCash();
     }

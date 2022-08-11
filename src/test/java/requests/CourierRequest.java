@@ -1,27 +1,23 @@
 package requests;
 
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
+import requests.testsData.NewCourierData;
 
 import java.io.File;
 
 import static io.restassured.RestAssured.given;
 
-public class CourierRequest {
-
-    private RequestSpecification requestSpecification = RestAssured.given()
-            .baseUri("http://qa-scooter.praktikum-services.ru");
+public class CourierRequest extends BaseRequest {
 
     private final static String COURIER_PATH = "/api/v1/courier/";
 
-    public Response createCourier(File file) {
+    public Response createCourier(NewCourierData newCourier) {
         return
                 given()
                         .spec(requestSpecification)
                         .header("Content-type", "application/json")
                         .and()
-                        .body(file)
+                        .body(newCourier)
                         .when()
                         .post(COURIER_PATH);
     }
@@ -37,13 +33,23 @@ public class CourierRequest {
                 .post(COURIER_PATH + "login");
     }
 
-    public void deleteTestData(File file) {
+    public Response loginCourier1(Object courierLoginData) {
+        return given()
+                .spec(requestSpecification)
+                .header("Content-type", "application/json")
+                .and()
+                .body(courierLoginData)
+                .when()
+                .post(COURIER_PATH + "login");
+    }
+
+    public void deleteTestData(Object courierLoginData) {
         int courierId;
         Response response = given()
                 .spec(requestSpecification)
                 .header("Content-type", "application/json")
                 .and()
-                .body(file)
+                .body(courierLoginData)
                 .when()
                 .post(COURIER_PATH + "login");
         if (!(response.then().extract().body().path("id") == null)) {
